@@ -14,6 +14,7 @@ class TestQuestion extends Model
         'id',
         'test_id',
         'question_id',
+        'points'
     ];
 
     protected $guarded=[];

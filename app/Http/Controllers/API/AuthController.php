@@ -22,7 +22,7 @@ class AuthController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'succesfull'=>false]);
         }
 
         $user = User::create([
@@ -36,19 +36,24 @@ class AuthController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['data'=>$user,'access_token'=>$token,'token_type'=>'Bearer', ]);
+            ->json(['data'=>$user,'access_token'=>$token,'token_type'=>'Bearer','succesfull'=>true]);
     }
 
     public function login(Request $request)
     {
         if(!Auth::attempt($request->only('username', 'password'))){
-            return response()->json(['message'=>'Unauthorized'],401);
+            return response()->json(['succesfull'=>false]);
         }
 
         $user = User::where('username',$request['username'])->firstOrFail();
         $token = $user->createToken('auth_token')->plainTextToken;
 
         return response()
-            ->json(['message'=>'Welcome '.$user->username,'access_token'=>$token,'token_type'=>'Bearer', ]);
+            ->json(['firstname'=>$user->firstname,'lastname'=>$user->lastname,'succesfull'=>true,'access_token'=>$token,'token_type'=>'Bearer','role'=>$user->role]);
+    }
+
+    public function logout(){
+        auth()->user()->tokens()->delete();
+        return ['message'=>'Successfull logout'];
     }
 }

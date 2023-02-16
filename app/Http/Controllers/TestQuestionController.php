@@ -134,4 +134,15 @@ class TestQuestionController extends Controller
             return response()->json($e);
         }
     }
+
+    //uzimanje broja poena testa
+    public function getPoints($test_id,$question_id){
+        $testQuestion = TestQuestion::where('test_id',$test_id)->where('question_id',$question_id)->get();
+        if(sizeof($testQuestion)===0){
+            return response()->json("Not found",404);
+        }
+        else{
+            return response()->json($testQuestion);
+        }
+    }
 }
