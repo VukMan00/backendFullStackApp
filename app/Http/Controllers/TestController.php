@@ -41,18 +41,18 @@ class TestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name'=>'required|string|max:255',
-            'points'=>'required|integer|min:0',
-            'author'=>'required|string|max:255'
+            'author'=>'required|string|max:255',
+            'maxPoints'=>'integer|min:0',
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $test = Test::create([
             'name'=>$request->name,
-            'points'=>$request->points,
-            'author'=>$request->author
+            'author'=>$request->author,
+            'maxPoints'=>$request->maxPoints,
         ]);
 
         return response()->json(new TestResource($test));
@@ -86,8 +86,8 @@ class TestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name'=>'required|string|max:255',
-            'points'=>'required|integer|min:0',
-            'author'=>'required|string|max:255'
+            'author'=>'required|string|max:255',
+            'maxPoints'=>'integer|min:0',
         ]);
 
         if($validator->fails()){
@@ -100,7 +100,7 @@ class TestController extends Controller
         }
         else{
             $test->name = $request->name;
-            $test->points = $request->points;
+            $test->maxPoints = $request->maxPoints;
             $test->author = $request->author;
             $test->update();
             return response()->json('Successfull');
@@ -118,12 +118,12 @@ class TestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'name'=>'required|string|max:255',
-            'points'=>'required|integer|min:0',
-            'author'=>'required|string|max:255'
+            'author'=>'required|string|max:255',
+            'maxPoints'=>'integer|min:0',
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
         
         $test = Test::find($test_id);
@@ -132,7 +132,7 @@ class TestController extends Controller
         }
         else{
             $test->name = $request->name;
-            $test->points = $request->points;
+            $test->maxPoints = $request->maxPoints;
             $test->author = $request->author;
             $test->update();
             return response()->json('Successfull');

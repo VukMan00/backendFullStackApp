@@ -36,7 +36,7 @@ class QuestionAnswerController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $question = Question::find($question_id);

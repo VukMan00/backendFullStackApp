@@ -56,10 +56,11 @@ class TestQuestionController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'question_id'=>'required',
+            'points'=>'integer|min:0'
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $question = Question::find($request->question_id);
@@ -70,6 +71,7 @@ class TestQuestionController extends Controller
             $testQuestion = new TestQuestion();
             $testQuestion->test_id = $test_id;
             $testQuestion->question_id = $request->question_id;
+            $testQuestion->points = $request->points;
             $testQuestion->save();
             return response()->json($testQuestion);
         }
@@ -79,6 +81,7 @@ class TestQuestionController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'question_id'=>'required',
+            'points'=>'integer|min:0'
         ]);
 
         if($validator->fails()){
@@ -91,6 +94,7 @@ class TestQuestionController extends Controller
         }
         else{
             $testQuestion->question_id = $request->question_id;
+            $testQuestion->points = $request->points;
             $testQuestion->update();
             return response()->json("Successfull");
         }
@@ -100,6 +104,7 @@ class TestQuestionController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'question_id'=>'required',
+            'points'=>'integer|min:0'
         ]);
 
         if($validator->fails()){
@@ -112,6 +117,7 @@ class TestQuestionController extends Controller
         }
         else{
             $testQuestion->question_id = $request->question_id;
+            $testQuestion->points = $request->points;
             $testQuestion->update();
             return response()->json("Successfull");
         }
@@ -132,6 +138,17 @@ class TestQuestionController extends Controller
         }
         catch(\Illuminate\Database\QueryException $e){
             return response()->json($e);
+        }
+    }
+
+    //uzimanje broja poena testa
+    public function getPoints($test_id,$question_id){
+        $testQuestion = TestQuestion::where('test_id',$test_id)->where('question_id',$question_id)->get();
+        if(sizeof($testQuestion)===0){
+            return response()->json("Not found",404);
+        }
+        else{
+            return response()->json($testQuestion);
         }
     }
 }

@@ -49,7 +49,7 @@ class AnswerController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $question = Question::find($request->question_id);
@@ -138,7 +138,7 @@ class AnswerController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $question = Question::find($request->question_id);

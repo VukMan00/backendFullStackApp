@@ -82,7 +82,7 @@ class UserTestController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $test = Test::find($request->test_id);
@@ -152,7 +152,7 @@ class UserTestController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $userTest = UserTest::where('user_id',$user_id)->where('test_id',$test_id)->get();

@@ -10,6 +10,7 @@ use App\Http\Controllers\QuestionController;
 use App\Http\Controllers\TestController;
 use App\Http\Controllers\TestQuestionController;
 use App\Http\Controllers\UserTestController;
+use App\Models\TestQuestion;
 
 /*
 |--------------------------------------------------------------------------
@@ -41,6 +42,7 @@ Route::get('/tests/{id}',[TestController::class,'show']);
 Route::get('/questions/{id}/answers',[QuestionAnswerController::class,'index']);
 Route::get('/tests/{id}/questions',[TestQuestionController::class,'index']);
 Route::get('/questions/{id}/tests',[TestQuestionController::class,'getTests']);
+Route::get('/test/{testId}/question/{questionId}',[TestQuestionController::class,'getPoints']);
 Route::get('/users/{id}/tests',[UserTestController::class,'index']);
 Route::get('/tests/{id}/users',[UserTestController::class,'getUsers']);
 
@@ -55,6 +57,8 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
     Route::get('/profile',function(Request $request){
         return auth()->user();
     });
+
+    Route::post('/logout',[AuthController::class,'logout']);
 
     Route::resource('users',UserController::class)->only(['update','edit','destroy'])->middleware(['role']);
     Route::resource('answers',AnswerController::class)->only(['update','edit','store','destroy'])->middleware(['role']);
