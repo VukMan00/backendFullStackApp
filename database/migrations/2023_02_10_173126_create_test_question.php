@@ -15,7 +15,6 @@ class CreateTestQuestion extends Migration
     public function up()
     {
         Schema::create('test_question', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('test_id');
             $table->foreignId('question_id');
             $table->integer('points');

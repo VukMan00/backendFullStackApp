@@ -14,7 +14,6 @@ class CreateUsersTests extends Migration
     public function up()
     {
         Schema::create('users_tests', function (Blueprint $table) {
-            $table->id();
             $table->foreignId('user_id');
             $table->foreignId('test_id');
             $table->integer('points');

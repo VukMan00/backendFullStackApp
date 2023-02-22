@@ -11,7 +11,6 @@ class TestQuestion extends Model
 
     protected $table = 'test_question';
     protected $fillable = [
-        'id',
         'test_id',
         'question_id',
         'points'

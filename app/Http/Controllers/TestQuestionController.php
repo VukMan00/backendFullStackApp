@@ -8,6 +8,7 @@ use App\Models\Question;
 use App\Models\Test;
 use App\Models\TestQuestion;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class TestQuestionController extends Controller
@@ -85,7 +86,7 @@ class TestQuestionController extends Controller
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $testQuestion = TestQuestion::where('test_id',$test_id)->where('question_id',$question_id)->get();
@@ -93,9 +94,10 @@ class TestQuestionController extends Controller
             return response()->json("Not found",404);
         }
         else{
-            $testQuestion->question_id = $request->question_id;
-            $testQuestion->points = $request->points;
-            $testQuestion->update();
+            DB::table('test_question')
+            ->where('test_id', $test_id)
+            ->where('question_id',$question_id)
+            ->update(['points' => $request->points]);
             return response()->json("Successfull");
         }
     }
@@ -132,7 +134,10 @@ class TestQuestionController extends Controller
                 return response()->json("Not found",404);
             }
             else{
-                $testQuestion->each->delete();
+                DB::table('test_question')
+                ->where('test_id', $test_id)
+                ->where('question_id',$question_id)
+                ->delete();
                 return response()->json('Successfull');
             }
         }

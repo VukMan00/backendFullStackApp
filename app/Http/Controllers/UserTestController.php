@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Models\UserTest;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class UserTestController extends Controller
 {
@@ -79,6 +80,8 @@ class UserTestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'test_id'=>'required',
+            'points'=>'required|integer|min:0',
+            'grade'=>'required|integer|min:5'
         ]);
 
         if($validator->fails()){
@@ -93,6 +96,8 @@ class UserTestController extends Controller
             $userTest = new UserTest();
             $userTest->user_id = $user_id;
             $userTest->test_id = $request->test_id;
+            $userTest->points = $request->points;
+            $userTest->grade = $request->grade;
             $userTest->save();
             return response()->json($userTest);
         }
@@ -105,7 +110,6 @@ class UserTestController extends Controller
      * @return \Illuminate\Http\Response
      */
 
-    //dodavanje testa user-u
     public function show($user_id,Request $request)
     {
         //
@@ -121,10 +125,12 @@ class UserTestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'test_id'=>'required',
+            'points'=>'required|integer|min:0',
+            'grade'=>'required|integer|min:5'
         ]);
 
         if($validator->fails()){
-            return response()->json($validator->errors());
+            return response()->json(['validator'=>$validator->errors(),'successful'=>false]);
         }
 
         $userTest = UserTest::where('user_id',$user_id)->where('test_id',$test_id)->get();
@@ -132,8 +138,10 @@ class UserTestController extends Controller
             return response()->json("Not found",404);
         }
         else{
-            $userTest->test_id = $request->test_id;
-            $userTest->update();
+            DB::table('users_tests')
+            ->where('user_id', $user_id)
+            ->where('test_id',$test_id)
+            ->update(['points' => $request->points,'grade'=>$request->grade]);
             return response()->json("Successfull");
         }
     }
@@ -149,6 +157,8 @@ class UserTestController extends Controller
     {
         $validator = Validator::make($request->all(),[
             'test_id'=>'required',
+            'points'=>'required|integer|min:0',
+            'grade'=>'required|integer|min:5'
         ]);
 
         if($validator->fails()){
@@ -160,8 +170,10 @@ class UserTestController extends Controller
             return response()->json("Not found",404);
         }
         else{
-            $userTest->test_id = $request->test_id;
-            $userTest->update();
+            DB::table('users_tests')
+            ->where('user_id', $user_id)
+            ->where('test_id',$test_id)
+            ->update(['points' => $request->points,'grade'=>$request->grade]);
             return response()->json("Successfull");
         }
     }
@@ -182,12 +194,26 @@ class UserTestController extends Controller
                 return response()->json("Not found",404);
             }
             else{
-                $userTest->each->delete();
+                DB::table('users_tests')
+                ->where('user_id', $user_id)
+                ->where('test_id',$test_id)
+                ->delete();
                 return response()->json('Successfull');
             }
         }
         catch(\Illuminate\Database\QueryException $e){
             return response()->json($e);
+        }
+    }
+
+    //uzimanje broja poena ostvarenih na testu
+    public function getPoints($user_id,$test_id){
+        $userTest = UserTest::where('user_id',$user_id)->where('test_id',$test_id)->get();
+        if(sizeof($userTest)===0){
+            return response()->json("Not found",404);
+        }
+        else{
+            return response()->json($userTest);
         }
     }
 }

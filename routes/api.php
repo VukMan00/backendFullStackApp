@@ -43,6 +43,7 @@ Route::get('/questions/{id}/answers',[QuestionAnswerController::class,'index']);
 Route::get('/tests/{id}/questions',[TestQuestionController::class,'index']);
 Route::get('/questions/{id}/tests',[TestQuestionController::class,'getTests']);
 Route::get('/test/{testId}/question/{questionId}',[TestQuestionController::class,'getPoints']);
+Route::get('/user/{userId}/test/{testId}',[UserTestController::class,'getPoints']);
 Route::get('/users/{id}/tests',[UserTestController::class,'index']);
 Route::get('/tests/{id}/users',[UserTestController::class,'getUsers']);
 
@@ -67,7 +68,7 @@ Route::group(['middleware'=>['auth:sanctum']],function(){
 
     //Ugnjezdeni resusri
     Route::resource('questions.answers',QuestionAnswerController::class)->only(['update','edit','store','destroy'])->middleware(['role']);
-    Route::resource('tests.questions',TestQuestionController::class)->only(['store','destroy'])->middleware(['role']);
-    Route::resource('users.tests',UserTestController::class)->only(['store','destroy'])->middleware(['role']);
+    Route::resource('tests.questions',TestQuestionController::class)->only(['update','store','destroy'])->middleware(['role']);
+    Route::resource('users.tests',UserTestController::class)->only(['store','update']);
 });
 
